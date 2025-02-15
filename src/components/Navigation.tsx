@@ -1,91 +1,105 @@
 
-import { ShoppingCart, Heart, User, Menu } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Menu, X, ShoppingCart, User } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
-export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export const Navigation = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <nav className="fixed top-0 left-0 w-full z-50 glass">
+      <div className="container py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
           <Link to="/" className="font-serif text-2xl">
             Shirts Matter
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/shop" className="hover:text-white/70 transition-colors">
-              Shop
+            <Link to="/new-arrivals" className="hover:text-white/70">
+              New Arrivals
             </Link>
-            <Link to="/collections" className="hover:text-white/70 transition-colors">
+            <Link to="/best-sellers" className="hover:text-white/70">
+              Best Sellers
+            </Link>
+            <Link to="/collections" className="hover:text-white/70">
               Collections
             </Link>
-            <Link to="/about" className="hover:text-white/70 transition-colors">
+            <Link to="/about" className="hover:text-white/70">
               About
             </Link>
           </div>
 
           {/* Icons */}
-          <div className="hidden md:flex items-center space-x-6">
-            <button className="hover:text-white/70 transition-colors">
-              <Heart size={20} />
-            </button>
-            <button className="hover:text-white/70 transition-colors">
-              <ShoppingCart size={20} />
-            </button>
-            <button className="hover:text-white/70 transition-colors">
-              <User size={20} />
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <button
+                  onClick={() => signOut()}
+                  className="hover:text-white/70"
+                >
+                  Sign Out
+                </button>
+                <Link to="/profile" className="hover:text-white/70">
+                  <User size={24} />
+                </Link>
+              </>
+            ) : (
+              <Link to="/auth" className="hover:text-white/70">
+                Sign In
+              </Link>
+            )}
+            <Link to="/cart" className="hover:text-white/70">
+              <ShoppingCart size={24} />
+            </Link>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden hover:text-white/70"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <Menu size={24} />
-          </button>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden glass animate-fade-in">
-          <div className="px-4 pt-2 pb-4 space-y-4">
-            <Link
-              to="/shop"
-              className="block hover:text-white/70 transition-colors"
-            >
-              Shop
-            </Link>
-            <Link
-              to="/collections"
-              className="block hover:text-white/70 transition-colors"
-            >
-              Collections
-            </Link>
-            <Link
-              to="/about"
-              className="block hover:text-white/70 transition-colors"
-            >
-              About
-            </Link>
-            <div className="flex space-x-6 pt-4 border-t border-white/10">
-              <button className="hover:text-white/70 transition-colors">
-                <Heart size={20} />
-              </button>
-              <button className="hover:text-white/70 transition-colors">
-                <ShoppingCart size={20} />
-              </button>
-              <button className="hover:text-white/70 transition-colors">
-                <User size={20} />
-              </button>
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden pt-4 pb-2">
+            <div className="flex flex-col space-y-4">
+              <Link
+                to="/new-arrivals"
+                className="hover:text-white/70"
+                onClick={() => setIsOpen(false)}
+              >
+                New Arrivals
+              </Link>
+              <Link
+                to="/best-sellers"
+                className="hover:text-white/70"
+                onClick={() => setIsOpen(false)}
+              >
+                Best Sellers
+              </Link>
+              <Link
+                to="/collections"
+                className="hover:text-white/70"
+                onClick={() => setIsOpen(false)}
+              >
+                Collections
+              </Link>
+              <Link
+                to="/about"
+                className="hover:text-white/70"
+                onClick={() => setIsOpen(false)}
+              >
+                About
+              </Link>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </nav>
   );
-}
+};
